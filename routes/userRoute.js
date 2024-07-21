@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createUser } from '../controllers/index.js'
+import { createUser, login } from '../controllers/index.js'
 
 const route = Router();
 
@@ -19,5 +19,12 @@ route.post('/user/create-user',[
     validarCampos
 ],createUser)
 
+//Ruta para login
+route.post('/user/login',[
+    check('email','El campo email es requerido').notEmpty().trim().toLowerCase(),
+    check('email','El campo email no tine formato de email valido').isEmail().trim().toLowerCase(),
+    check('password','El campo password es requerido').notEmpty().trim(),
+    validarCampos
+],login)
 
 export default route
