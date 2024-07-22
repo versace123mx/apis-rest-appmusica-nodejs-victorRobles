@@ -71,7 +71,7 @@ const profile = async (req, res) => {
         
     try {
         //verifico si el usuario existe
-        const user = await User.findOne({_id:id,estado:true})
+        const user = await User.findOne({_id:id})
         if(!user){
             return res.status(200).json({ status: "error", msg: "Usuario no encontrado",data:[] })
         }
@@ -89,7 +89,7 @@ const updateProfile =  async (req, res) => {
 
     try {
         const userUpdate = await User.findByIdAndUpdate(
-            {_id:req.usuario.id, estado:true},
+            {_id:req.usuario.id},
             {name,surname,update_at: Date.now()}, 
             {new: true})
         res.status(200).json({ status: "success", msg:"desde update",data:userUpdate})
@@ -120,10 +120,30 @@ const updateImageProfile = async (req, res) => {
     }
 }
 
+
+//Muestra imagen perfil usuario logueado
+const showImageProfile = (req, res) => {
+    try {
+        //creamos la ruta de la imagen previa
+        const pathImage = `${process.cwd()}/uploads/img-profile/${req.usuario.imagen}` 
+        
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+            return res.sendFile(pathImage)
+        }
+
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"Error Al obtenr la Imagen.",data:[],error})
+    }
+
+    const pathImage = `${process.cwd()}/assets/no-image.jpg`
+    return res.sendFile(pathImage)
+}
 export {
     createUser,
     login,
     profile,
     updateProfile,
-    updateImageProfile
+    updateImageProfile,
+    showImageProfile
 }

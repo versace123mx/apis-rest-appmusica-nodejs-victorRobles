@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createUser, login, profile, updateProfile, updateImageProfile } from '../controllers/index.js'
+import { createUser, login, profile, updateProfile, updateImageProfile, showImageProfile } from '../controllers/index.js'
 
 const route = Router();
 
@@ -49,5 +49,8 @@ route.put('/user/updateimageprofile',[
     validarArchivoSubir
 ],updateImageProfile)
 
+
+//Ruta para mostrar la imagen de perfil logueado
+route.get('/user/mostrar-imagen-perfil',validarJWT,showImageProfile)
 
 export default route
