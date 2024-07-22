@@ -1,6 +1,4 @@
 import fs from 'fs'
-import bcrypt from 'bcryptjs'
-import generarJWT   from '../helper/generarJWT.js'
 import { subirArchivo } from '../helper/subir-archivo.js'
 import { Artist, Album, Song } from '../models/index.js'
 
