@@ -30,7 +30,7 @@ const ArtistSchema = mongoose.Schema({
 //Retornamos solo los datos que nesecitamos ver no el passsword, no el __v, no _id esto es del Schema y al _id le cambiamos el nombre visualmente
 ArtistSchema.methods.toJSON = function(){
     const {__v, _id, estado, update_at, imagen, ...artist} = this.toObject();
-    user.artist = _id;
+    artist.uid = _id;
     return artist;
 }
 

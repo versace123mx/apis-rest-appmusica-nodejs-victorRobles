@@ -2,7 +2,7 @@ import fs from 'fs'
 import bcrypt from 'bcryptjs'
 import generarJWT   from '../helper/generarJWT.js'
 import { subirArchivo } from '../helper/subir-archivo.js'
-import User from '../models/User.js'
+import { User } from '../models/index.js'
 
 //Metodo para crear un usuario
 const createUser = async (req, res) => {
