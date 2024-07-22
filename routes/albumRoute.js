@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createAlbum, getAlbumforId, showAlbums, updateAlbum } from '../controllers/index.js'
+import { createAlbum, getAlbumforId, showAlbums, updateAlbum , updateAlbumImage} from '../controllers/index.js'
 
 const route = Router();
 
@@ -45,4 +45,11 @@ route.put('/album/update-album/:id',[
     check('year','El campo year debe ser numerico de 4 caracteres').isNumeric().isLength({min:4,max:4}),
     validarCampos
 ],updateAlbum)
+
+//Metod para actualizar imagen del album por id
+route.put('/album/update-album-image/:id',[
+    validarJWT,
+    validarArchivoSubir
+],updateAlbumImage)
+
 export default route

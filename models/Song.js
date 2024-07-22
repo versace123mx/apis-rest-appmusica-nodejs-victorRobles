@@ -21,7 +21,7 @@ const SongSchema = mongoose.Schema({
     },
     file:{
         type:String,
-        required: true
+        default: "default.mp3"
     },
     estado:{
         type: Boolean,

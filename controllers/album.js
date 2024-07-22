@@ -110,9 +110,39 @@ const updateAlbum = async (req, res) => {
 
 }
 
+//Metodo para actualizar la imagen del album por id
+const updateAlbumImage = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+    
+        const album = await Album.findOne({_id:id, estado:true})
+        if(!album){
+            return res.status(200).json({status: "success", msg:"El Album no existe con ese criterio de busqueda o ya ha sido eliminado, intenta con otro id de un Album valido",data:[]})
+        }
+        
+        const pathImage = './uploads/img-album/' + album.imagen //creamos la ruta de la imagen previa
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+                fs.unlinkSync(pathImage)//en caso de que la imagen previa exista procedemos a eliminarla
+        }
+
+        const nombre = await subirArchivo(req.files, undefined, 'img-album')
+        album.imagen = nombre
+        album.update_at = Date.now()
+        await album.save({ new: true })
+        res.status(200).json({ status: "success", msg:"Imagen Album Actualizada Correctamente",data:[]})
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen.",data:[],error})
+    }
+
+}
+
 export {
     createAlbum,
     getAlbumforId,
     showAlbums,
-    updateAlbum
+    updateAlbum,
+    updateAlbumImage
 }
