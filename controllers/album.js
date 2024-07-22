@@ -56,7 +56,39 @@ const getAlbumforId = async (req, res) => {
 
 }
 
+//Metodo para mostrar todos los albums de un artista y paginarlo
+const showAlbums =  async (req, res) => {
+
+    //Recibo los datos del id
+    const { id } = req.params
+
+    const { limite = 5, pagina = 1 } = req.query //Los parametros que bienen en la query
+
+    if(isNaN(limite) || isNaN(pagina)){
+        return res.json({ status: "error", msj: 'Los valores deben de ser numeros', data:[] });
+    }
+
+    try {
+        //Para este caso se crean dos promesas para que corra al mismo tiempo y se hace una destructuracion de arreglos
+        const [total, album] = await Promise.all([
+            Album.countDocuments({artist:id, estado: true}),
+            Album.find({artist:id,estado: true}).skip((pagina-1)*limite).limit(limite).sort("year")
+        ])
+
+        if(!total){
+            return res.status(200).json({status: "success", msg:"No hay Album para ese criterio de busqueda, intenta con otro id de un Artista valido",data:[]})
+        }
+        const totalPaginas = Math.ceil(total/limite)
+        res.status(200).json({ status: "success", msg:"desde el listado de album's",
+            totalRegistros:total,pagina,totalPaginas,numRegistrosMostrarXPagina:limite,data:album})
+    } catch (error) {
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el listado de Album's",data:[],error})
+    }
+
+}
+
 export {
     createAlbum,
-    getAlbumforId
+    getAlbumforId,
+    showAlbums
 }
