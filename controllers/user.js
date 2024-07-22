@@ -82,8 +82,25 @@ const profile = async (req, res) => {
     }
 }
 
+//Actualizar los datos del usuario logueado
+const updateProfile =  async (req, res) => {
+
+    const { name,surname } = req.body
+
+    try {
+        const userUpdate = await User.findByIdAndUpdate(
+            {_id:req.usuario.id, estado:true},
+            {name,surname,update_at: Date.now()}, 
+            {new: true})
+        res.status(200).json({ status: "success", msg:"desde update",data:userUpdate})
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
+    }
+}
+
 export {
     createUser,
     login,
-    profile
+    profile,
+    updateProfile
 }

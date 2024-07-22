@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createUser, login, profile } from '../controllers/index.js'
+import { createUser, login, profile, updateProfile } from '../controllers/index.js'
 
 const route = Router();
 
@@ -34,4 +34,13 @@ route.get('/user/profile/:id',[
     check('id','El id no es un id de Mongo valido').isMongoId(),
     validarCampos
 ],profile)
+
+//Ruta para actualizar los datos del usuario logeado
+route.put('/user/updateprofile',[
+    validarJWT,
+    check('name','El campo Name no debe de estar vacio').rtrim().notEmpty().toLowerCase(),
+    check('surname','El campo Surname no debe de estar vacio').rtrim().notEmpty().toLowerCase(),
+    validarCampos
+],updateProfile)
+
 export default route
