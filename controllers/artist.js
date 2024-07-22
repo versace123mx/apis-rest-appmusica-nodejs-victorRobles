@@ -76,8 +76,31 @@ const getlistArtist = async (req, res) => {
 
 }
 
+//Metodo para editar la informacion del artistas que tenga un estatus de activo
+//Tambien solo podria editar esta informacion un usuario con un rol especifico, pero eso no lo hago por ahora
+const updateArtistInfo =  async (req, res) => {
+
+    const { name,description } = req.body
+    const { id } = req.params
+
+    try {
+
+        const artistUpdate = await Artist.findOneAndUpdate({_id:id,estado: true},
+                                    {name,description,update_at: Date.now()}, {new: true})
+
+        if(!artistUpdate){
+            return res.status(200).json({ status: "error", msj: 'El artista no se encuentra o ha sido eliminado', data:[] });
+        }
+
+        res.status(200).json({ status: "success", msg:"El artistas se ha actualizado correctamente",data:artistUpdate})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
+    }
+}
+
 export {
     createArtist,
     getArtist,
-    getlistArtist
+    getlistArtist,
+    updateArtistInfo
 }
