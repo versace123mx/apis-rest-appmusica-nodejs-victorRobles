@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createArtist } from '../controllers/index.js'
+import { createArtist, getArtist } from '../controllers/index.js'
 
 const route = Router();
 
@@ -14,5 +14,12 @@ route.post('/artist/create-artist',[
     check('description','El campo description debe ser minimo de 3 caracteres').isLength({min:3,max:70}).trim().toLowerCase(),
     validarCampos
 ],createArtist)
+
+//Ruta que obtiene un artista en base a su id
+route.get('/artist/get-artist/:id',[
+    validarJWT,
+    check('id','El Id no es un Id de Mongo valido').isMongoId(),
+    validarCampos
+],getArtist)
 
 export default route
