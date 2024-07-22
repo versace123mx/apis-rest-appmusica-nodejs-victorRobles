@@ -87,8 +87,32 @@ const showAlbums =  async (req, res) => {
 
 }
 
+//Metodo para actualizar los datos basicos de un album por id
+const updateAlbum = async (req, res) => {
+
+    const { titulo, description, year } = req.body
+    const { id } = req.params
+
+    try {
+        const albumUpdate = await Album.findByIdAndUpdate(
+            {_id:id, estado:true},
+            { titulo, description, year, update_at: Date.now()}, 
+            {new: true}).select("titulo description year")
+
+            if(!albumUpdate){
+                return res.status(200).json({status: "success", msg:"El Album no existe con ese criterio de busqueda o ya ha sido eliminado, intenta con otro id de un Album valido",data:[]})
+            }
+        
+        res.status(200).json({ status: "success", msg:"desde update",data:albumUpdate})
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
+    }
+
+}
+
 export {
     createAlbum,
     getAlbumforId,
-    showAlbums
+    showAlbums,
+    updateAlbum
 }
