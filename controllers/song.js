@@ -77,6 +77,27 @@ const showSongs = async (req, res) => {
 }
 
 //Metodo para actualizar cancion de un album
+const updateSong = async (req, res) => {
+
+    const { track, name, duration } = req.body
+    const { id } = req.params
+
+    try {
+        const songUpdate = await Song.findByIdAndUpdate(
+            {_id:id, estado:true},
+            { track, name, duration, update_at: Date.now()}, 
+            {new: true}).select("name track duration")
+
+            if(!songUpdate){
+                return res.status(200).json({status: "success", msg:"La Cancion no existe con ese criterio de busqueda o ya ha sido eliminada, intenta con otro id de una Cancion valida",data:[]})
+            }
+        
+        res.status(200).json({ status: "success", msg:"desde update Song",data:songUpdate})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
+    }
+
+}
 
 //Metodo para subir el archivo de la cancion
 
@@ -85,5 +106,6 @@ const showSongs = async (req, res) => {
 export {
     createSong,
     showSong,
-    showSongs
+    showSongs,
+    updateSong
 }
