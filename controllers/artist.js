@@ -2,7 +2,7 @@ import fs from 'fs'
 import bcrypt from 'bcryptjs'
 import generarJWT   from '../helper/generarJWT.js'
 import { subirArchivo } from '../helper/subir-archivo.js'
-import { Artist } from '../models/index.js'
+import { Artist, Album, Song } from '../models/index.js'
 
 //Crear un artista
 const createArtist = async (req, res) => {
@@ -112,7 +112,10 @@ const eliminarArtista =  async(req, res) => {
             return res.status(200).json({ status: "error", msj: 'El artista no se encuentra o ha sido eliminado', data:[] });
         }
 
-        res.status(200).json({ status: "success", msg:"El artistas se ha eliminado correctamente",data:artistUpdate})
+        const album = await Album.updateMany({artist:artistUpdate.id, estado:true},{estado:false,update_at:Date.now()})
+        const song = await Song.updateMany({album:album.id, estado:true},{estado:false,update_at:Date.now()})
+        
+        res.status(200).json({ status: "success", msg:"El artistas, album, canciones se han eliminado, correctamente",data:artistUpdate})
     } catch (error) {
         return res.status(400).json({ status: "error", msg:"no se pudieron eliminar, validado con el admin.",data:[],error})
     }
