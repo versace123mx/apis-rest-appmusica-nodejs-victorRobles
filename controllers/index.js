@@ -1,8 +1,9 @@
-import { createUser, login, profile , updateProfile} from './user.js'
+import { createUser, login, profile , updateProfile, updateImageProfile } from './user.js'
 
 export {
     createUser,
     login,
     profile,
-    updateProfile
+    updateProfile,
+    updateImageProfile
 }

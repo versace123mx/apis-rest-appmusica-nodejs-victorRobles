@@ -98,9 +98,32 @@ const updateProfile =  async (req, res) => {
     }
 }
 
+//Actualiza la imagen de perfil
+const updateImageProfile = async (req, res) => {
+
+    try {
+        const { imagen } = req.usuario//del usuario logueado extraigo su imagen
+    
+        const pathImage = './uploads/img-profile/' + imagen //creamos la ruta de la imagen previa
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+                fs.unlinkSync(pathImage)//en caso de que la imagen previa exista procedemos a eliminarla
+        }
+
+        const nombre = await subirArchivo(req.files, undefined, 'img-profile')
+        req.usuario.imagen = nombre
+        req.usuario.update_at = Date.now()
+        await req.usuario.save({ new: true })
+        res.status(200).json({ status: "success", msg:"Imagen Actualizada Correctamente",data:[]})
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen.",data:[],error})
+    }
+}
+
 export {
     createUser,
     login,
     profile,
-    updateProfile
+    updateProfile,
+    updateImageProfile
 }

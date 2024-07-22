@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createUser, login, profile, updateProfile } from '../controllers/index.js'
+import { createUser, login, profile, updateProfile, updateImageProfile } from '../controllers/index.js'
 
 const route = Router();
 
@@ -42,5 +42,12 @@ route.put('/user/updateprofile',[
     check('surname','El campo Surname no debe de estar vacio').rtrim().notEmpty().toLowerCase(),
     validarCampos
 ],updateProfile)
+
+//Actualiza imagen de perfil, usuario logueado
+route.put('/user/updateimageprofile',[
+    validarJWT,
+    validarArchivoSubir
+],updateImageProfile)
+
 
 export default route
