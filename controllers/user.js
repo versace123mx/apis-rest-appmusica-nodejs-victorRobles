@@ -43,26 +43,47 @@ const login = async (req, res) => {
         //verifico si el usuario existe
         const user = await User.findOne({email,estado:true})
         if(!user){
-            return res.status(200).json({ status: "error", msg: "Usuario no encontrado" })
+            return res.status(200).json({ status: "error", msg: "Usuario no encontrado",data:[] })
         }
         
         //validar contraseña
         const validPassword = bcrypt.compareSync(password, user.password)
         if (!validPassword){
-            return res.status(400).json({ status:"error", msg: 'El email o password son incorrectos. - password'})
+            return res.status(400).json({ status:"error", msg: 'El email o password son incorrectos. - password',data:[]})
         }
 
         //Generar JWT se accede user.id o user._id ya que mongo asi lo permite id es un alias de _id
         const token = generarJWT(user.id)
 
         res.status(200).json({status:"success",msg:"login",
-                                data:{name:user.name,nick:user.nick,email:user.email,token}})
+                                data:{name:user.name,nick:user.nick,token}})
     } catch (error) {
-        return res.status(400).json({ status:"error", msg: 'Error en la generacion del token'})
+        return res.status(400).json({ status:"error", msg: 'Error en la generacion del token',data:[],error})
     }
 
 }
+
+//Mostrar perfil de usuario
+const profile = async (req, res) => {
+
+    //Recibo los datos del id
+    const { id } = req.params
+        
+    try {
+        //verifico si el usuario existe
+        const user = await User.findOne({_id:id,estado:true})
+        if(!user){
+            return res.status(200).json({ status: "error", msg: "Usuario no encontrado",data:[] })
+        }
+
+        res.status(200).json({ status: "success", msg: "Usuario encontrado exitosamente",data:user})
+    } catch (error) {
+        return res.status(400).json({ status:"error", msg: 'Error en la peticion de buscar usuario',data:[],error})
+    }
+}
+
 export {
     createUser,
-    login
+    login,
+    profile
 }

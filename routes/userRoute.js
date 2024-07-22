@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createUser, login } from '../controllers/index.js'
+import { createUser, login, profile } from '../controllers/index.js'
 
 const route = Router();
 
@@ -27,4 +27,11 @@ route.post('/user/login',[
     validarCampos
 ],login)
 
+
+//Ruta para obtener el perfil de un usuario por id
+route.get('/user/profile/:id',[
+    validarJWT,
+    check('id','El id no es un id de Mongo valido').isMongoId(),
+    validarCampos
+],profile)
 export default route

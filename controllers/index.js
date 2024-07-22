@@ -1,6 +1,7 @@
-import { createUser, login } from './user.js'
+import { createUser, login, profile } from './user.js'
 
 export {
     createUser,
-    login
+    login,
+    profile
 }
