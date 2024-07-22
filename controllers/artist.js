@@ -119,10 +119,71 @@ const eliminarArtista =  async(req, res) => {
 
 }
 
+//Metodo para actualizar imagen de Artista
+const updateImageArtist = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        //verificar si el artista esta activa y verificamos si corresponde con el id
+        const validaArtist = await Artist.findOne({_id:id,estado:true})
+        if(!validaArtist){
+            return res.status(200).json({status:"success",msg:"El Artista no existe o ya ha sido eliminado.",data:[] })
+        }
+        
+        const pathImage = './uploads/artist/' + validaArtist.imagen //creamos la ruta de la imagen previa
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+                fs.unlinkSync(pathImage)//en caso de que la imagen previa exista procedemos a eliminarla
+        }
+
+        const nombre = await subirArchivo(req.files, undefined,'artist')
+        const result = await Artist.findOneAndUpdate({_id:id},
+            {imagen:nombre,update_at:Date.now()},{ new: true })
+        res.status(200).json({ status: "success", msg:"Imagen Actualizada Correctamente", data:[]})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen catch.",data:[],error})
+    }
+
+}
+
+//Metodo para mostrar la imagen del Artista
+const showImageArtist =  async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        //verificar si el artista esta activa y verificamos si corresponde con el id
+        const validaArtist = await Artist.findOne({_id:id,estado:true})
+        if(!validaArtist){
+            return res.status(200).json({status:"success",msg:"El Artista no existe o ya ha sido eliminado.",data:[] })
+        }
+
+        //creamos la ruta de la imagen previa
+        const pathImage = `${process.cwd()}/uploads/artist/${validaArtist.imagen}` 
+        
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+            return res.sendFile(pathImage)
+        }
+
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"Error Al obtenr la Imagen.",data:[],error})
+    }
+
+    const pathImage = `${process.cwd()}/assets/no-image.jpg`
+    return res.sendFile(pathImage)
+
+}
+
 export {
     createArtist,
     getArtist,
     getlistArtist,
     updateArtistInfo,
-    eliminarArtista
+    eliminarArtista,
+    updateImageArtist,
+    showImageArtist
 }
