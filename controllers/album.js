@@ -139,10 +139,40 @@ const updateAlbumImage = async (req, res) => {
 
 }
 
+//Metodo para mostrar la imagen del album
+const showImageAlbum = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        const album = await Album.findOne({_id:id, estado:true})
+        if(!album){
+            return res.status(200).json({status: "success", msg:"El Album no existe con ese criterio de busqueda o ya ha sido eliminado, intenta con otro id de un Album valido",data:[]})
+        }
+
+        //creamos la ruta de la imagen previa
+        const pathImage = `${process.cwd()}/uploads/img-album/${album.imagen}` 
+        
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+            return res.sendFile(pathImage)
+        }
+
+    } catch (error) {
+        res.status(400).json({ status: "error", msg:"Error Al obtener la Imagen.",data:[],error})
+    }
+
+    const pathImage = `${process.cwd()}/assets/no-image.jpg`
+    return res.sendFile(pathImage)
+
+}
+
 export {
     createAlbum,
     getAlbumforId,
     showAlbums,
     updateAlbum,
-    updateAlbumImage
+    updateAlbumImage,
+    showImageAlbum
 }

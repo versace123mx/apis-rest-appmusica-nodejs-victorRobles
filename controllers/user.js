@@ -133,7 +133,7 @@ const showImageProfile = (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).json({ status: "error", msg:"Error Al obtenr la Imagen.",data:[],error})
+        res.status(400).json({ status: "error", msg:"Error Al obtener la Imagen.",data:[],error})
     }
 
     const pathImage = `${process.cwd()}/assets/no-image.jpg`
