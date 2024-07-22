@@ -33,25 +33,51 @@ const createArtist = async (req, res) => {
 //Obtener un artista
 const getArtist = async (req, res) => {
 
+    //Recibo los datos del id
+    const { id } = req.params
+
     try {
-        //Recibo los datos del id
-        const { id } = req.params
-            
+
         //verifico si el artista existe y su estado es true
         const artist = await Artist.findOne({_id:id, estado:true})
         if(!artist){
-            return res.status(200).json({ status: "error", msg: "Artista no encontrado" })
+            return res.status(200).json({ status: "error", msg: "Artista no encontrado", data:[] })
         }
 
         res.status(200).json({ status: "success", msg: "Artista encontrado",data:artist})
 
     } catch (error) {
-        return res.status(400).json({status:"error",msg:"Se produjo un erro al guardar el registro",data:[],error})
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el registro",data:[],error})
+    }
+
+}
+
+//Metodo para obtener los artistas y paginarlos
+const getlistArtist = async (req, res) => {
+
+    const { limite = 5, pagina = 1 } = req.query //Los parametros que bienen en la query
+
+    if(isNaN(limite) || isNaN(pagina)){
+        return res.json({ status: "error", msj: 'Los valores deben de ser numeros', data:[] });
+    }
+
+    try {
+        //Para este caso se crean dos promesas para que corra al mismo tiempo y se hace una destructuracion de arreglos
+        const [total, usuarios] = await Promise.all([
+            Artist.countDocuments({estado: true}),
+            Artist.find({estado: true}).skip((pagina-1)*limite).limit(limite)
+        ])
+        const totalPaginas = Math.ceil(total/limite)
+        res.status(200).json({ status: "success", msg:"desde el listado de artistas",
+            totalRegistros:total,pagina,totalPaginas,numRegistrosMostrarXPagina:limite,data:usuarios})
+    } catch (error) {
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el listado de Artistas",data:[],error})
     }
 
 }
 
 export {
     createArtist,
-    getArtist
+    getArtist,
+    getlistArtist
 }

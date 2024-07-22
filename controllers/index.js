@@ -1,5 +1,5 @@
 import { createUser, login, profile , updateProfile, updateImageProfile, showImageProfile } from './user.js'
-import { createArtist, getArtist } from './artist.js'
+import { createArtist, getArtist, getlistArtist } from './artist.js'
 
 export {
     createUser,
@@ -9,5 +9,6 @@ export {
     updateImageProfile,
     showImageProfile,
     createArtist,
-    getArtist
+    getArtist,
+    getlistArtist
 }

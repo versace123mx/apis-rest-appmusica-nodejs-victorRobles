@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createArtist, getArtist } from '../controllers/index.js'
+import { createArtist, getArtist, getlistArtist } from '../controllers/index.js'
 
 const route = Router();
 
@@ -21,5 +21,8 @@ route.get('/artist/get-artist/:id',[
     check('id','El Id no es un Id de Mongo valido').isMongoId(),
     validarCampos
 ],getArtist)
+
+//Ruta para obtener la lista de artistas y paginarlo
+route.get('/artist/get-list-artist', validarJWT, getlistArtist)
 
 export default route
