@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createArtist, getArtist, getlistArtist, updateArtistInfo } from '../controllers/index.js'
+import { createArtist, getArtist, getlistArtist, updateArtistInfo, eliminarArtista } from '../controllers/index.js'
 
 const route = Router();
 
@@ -34,7 +34,14 @@ route.put('/artist/update-artist-info/:id',[
     check('description','El campo description es obligatorio').notEmpty().trim().toLowerCase(),
     check('description','El campo description debe ser minimo de 3 caracteres').isLength({min:3,max:70}).trim().toLowerCase(),
     validarCampos
-], updateArtistInfo)
+],updateArtistInfo)
 
+
+//Ruta para eliminar un artista
+route.delete('/artist/delete-artist/:id',[
+    validarJWT,
+    check('id','El Id no es un Id de Mongo valido').isMongoId(),
+    validarCampos
+],eliminarArtista)
 
 export default route

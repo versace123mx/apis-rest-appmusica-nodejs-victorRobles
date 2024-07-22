@@ -98,9 +98,31 @@ const updateArtistInfo =  async (req, res) => {
     }
 }
 
+//Metood para eliminar un artista
+const eliminarArtista =  async(req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        const artistUpdate = await Artist.findOneAndUpdate({_id:id},
+                                    {estado:false,update_at: Date.now()}, {new: true})
+
+        if(!artistUpdate){
+            return res.status(200).json({ status: "error", msj: 'El artista no se encuentra o ha sido eliminado', data:[] });
+        }
+
+        res.status(200).json({ status: "success", msg:"El artistas se ha eliminado correctamente",data:artistUpdate})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"no se pudieron eliminar, validado con el admin.",data:[],error})
+    }
+
+}
+
 export {
     createArtist,
     getArtist,
     getlistArtist,
-    updateArtistInfo
+    updateArtistInfo,
+    eliminarArtista
 }
