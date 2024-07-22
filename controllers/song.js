@@ -26,6 +26,27 @@ const createSong = async (req, res) => {
 }
 
 //Metodo para mostrar cancion
+const showSong = async (req, res) => {
+
+    //Recibo los datos del id
+    const { id } = req.params
+
+    try {
+
+        //verifico si el album existe y su estado es true
+        const album = await Song.findOne({_id:id, estado:true}).select('-create_at -album')
+        .populate('album','titulo description year -_id')
+        if(!album){
+            return res.status(200).json({ status: "error", msg: "Cancion no encontrada", data:[] })
+        }
+
+        res.status(200).json({ status: "success", msg: "Cancion encontrada",data:album})
+
+    } catch (error) {
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el registro",data:[],error})
+    }
+
+}
 
 //Metodo para listar canciones de un album
 
@@ -36,5 +57,6 @@ const createSong = async (req, res) => {
 //Metodo para eliminar cancion
 
 export {
-    createSong
+    createSong,
+    showSong
 }
