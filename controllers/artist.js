@@ -65,7 +65,7 @@ const getlistArtist = async (req, res) => {
         //Para este caso se crean dos promesas para que corra al mismo tiempo y se hace una destructuracion de arreglos
         const [total, usuarios] = await Promise.all([
             Artist.countDocuments({estado: true}),
-            Artist.find({estado: true}).skip((pagina-1)*limite).limit(limite)
+            Artist.find({estado: true}).skip((pagina-1)*limite).limit(limite).sort("name")
         ])
         const totalPaginas = Math.ceil(total/limite)
         res.status(200).json({ status: "success", msg:"desde el listado de artistas",
