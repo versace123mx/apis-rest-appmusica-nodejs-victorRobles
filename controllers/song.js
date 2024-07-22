@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { subirArchivo } from '../helper/subir-archivo.js'
-import { Song } from '../models/index.js'
+import { Album, Song } from '../models/index.js'
 
 //Metodo para crear una cancion
 const createSong = async (req, res) => {
@@ -49,6 +49,32 @@ const showSong = async (req, res) => {
 }
 
 //Metodo para listar canciones de un album
+const showSongs = async (req, res) => {
+    
+    //Recibo los datos del id
+    const { id } = req.params
+
+    try {
+        //Verificamos si el album existe y esta activo
+        const album = await Album.findOne({_id:id, estado:true})
+        if(!album){
+            return res.status(200).json({ status: "error", msg: "Album no encontrada", data:[] })
+        }
+
+        //verifico si el album tiene canciones asociadas
+        const songs = await Song.find({album:id, estado:true}).select('-create_at -album')
+        .populate('album','titulo description year -_id')
+        if(!songs){
+            return res.status(200).json({ status: "error", msg: "Canciones no encontradas", data:[] })
+        }
+
+        res.status(200).json({ status: "success", msg: "Canciones encontradas",data:songs})
+
+    } catch (error) {
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el registro",data:[],error})
+    }
+
+}
 
 //Metodo para actualizar cancion de un album
 
@@ -58,5 +84,6 @@ const showSong = async (req, res) => {
 
 export {
     createSong,
-    showSong
+    showSong,
+    showSongs
 }

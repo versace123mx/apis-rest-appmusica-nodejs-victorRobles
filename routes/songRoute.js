@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createSong, showSong } from '../controllers/index.js'
+import { createSong, showSong , showSongs} from '../controllers/index.js'
 
 const route = Router();
 
@@ -24,5 +24,12 @@ route.get('/song/get-song/:id',[
     check('id','El id no es un id de Mongo valido').isMongoId(),
     validarCampos
 ],showSong)
+
+//Ruta para mostrar las canciones de un album por id
+route.get('/song/get-songs-album/:id',[
+    validarJWT,
+    check('id','El id no es un id de Mongo valido').isMongoId(),
+    validarCampos
+],showSongs)
 
 export default route
