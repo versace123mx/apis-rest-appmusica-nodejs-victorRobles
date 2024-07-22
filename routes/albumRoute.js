@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createAlbum } from '../controllers/index.js'
+import { createAlbum, getAlbumforId } from '../controllers/index.js'
 
 const route = Router();
 
@@ -17,6 +17,13 @@ route.post('/album/create',[
     check('year','El campo year debe ser numerico de 4 caracteres').isNumeric().isLength({min:4,max:4}),
     validarCampos
 ],createAlbum)
+
+//Mostrar un album por id
+route.get('/album/get-album/:id',[
+    validarJWT,
+    check('id','El id no es un id de Mongo valido').isMongoId(),
+    validarCampos
+],getAlbumforId)
 
 
 export default route

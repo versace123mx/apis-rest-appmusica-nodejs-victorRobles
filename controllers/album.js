@@ -33,6 +33,30 @@ const createAlbum = async (req, res) => {
     }
 }
 
+//Metodo para mostrar un album por id
+const getAlbumforId = async (req, res) => {
+
+    //Recibo los datos del id
+    const { id } = req.params
+
+    try {
+
+        //verifico si el album existe y su estado es true
+        const album = await Album.findOne({_id:id, estado:true}).select('-artist')
+        .populate('artist','name description -_id')
+        if(!album){
+            return res.status(200).json({ status: "error", msg: "Album no encontrado", data:[] })
+        }
+
+        res.status(200).json({ status: "success", msg: "Album encontrado",data:album})
+
+    } catch (error) {
+        return res.status(400).json({status:"error",msg:"Se produjo un erro al obtener el registro",data:[],error})
+    }
+
+}
+
 export {
-    createAlbum
+    createAlbum,
+    getAlbumforId
 }
