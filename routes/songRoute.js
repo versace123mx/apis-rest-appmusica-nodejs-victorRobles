@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createSong, showSong , showSongs, updateSong, updateFileSong , deleteSong} from '../controllers/index.js'
+import { createSong, showSong , showSongs, updateSong, updateFileSong , deleteSong, showFile } from '../controllers/index.js'
 
 const route = Router();
 
@@ -53,6 +53,12 @@ route.put('/song/update-file-song/:id',[
     validarArchivoSubir
 ],updateFileSong)
 
+//Ruta para mostrar el archivo mp3
+route.get('/song/mostrar-file-song/:id',[
+    validarJWT,
+    check('id','El id no es un id de Mongo valido').isMongoId(),
+    validarCampos,
+],showFile)
 
 //Ruta para eliminar una cancion por id
 route.delete('/song/delete-song/:id',[

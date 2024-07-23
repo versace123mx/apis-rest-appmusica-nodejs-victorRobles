@@ -128,6 +128,35 @@ const updateFileSong = async (req, res) => {
 
 }
 
+//Metodo para mostrar cancion
+const showFile = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        const song = await Song.findOne({_id:id, estado:true})
+        if(!song){
+            return res.status(200).json({status: "success", msg:"La Cancion no existe con ese criterio de busqueda o ya ha sido eliminado, intenta con otro id de un Cancio valida",data:[]})
+        }
+
+        //creamos la ruta de el archivo previo
+        const pathImage = `${process.cwd()}/uploads/img-song/${song.file}` 
+        
+        //verificamos si existe el archivo
+        if (fs.existsSync(pathImage)) {
+            return res.sendFile(pathImage)
+        }
+
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"Error Al obtener el Archivo.",data:[],error})
+    }
+
+    const pathImage = `${process.cwd()}/assets/no-image.jpg`
+    return res.sendFile(pathImage)
+
+}
+
 //Metodo para eliminar cancion
 const deleteSong = async (req, res) => {
 
@@ -157,5 +186,6 @@ export {
     showSongs,
     updateSong,
     updateFileSong,
-    deleteSong
+    deleteSong,
+    showFile
 }

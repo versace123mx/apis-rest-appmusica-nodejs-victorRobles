@@ -1,7 +1,7 @@
 import { createUser, login, profile , updateProfile, updateImageProfile, showImageProfile } from './user.js'
 import { createArtist, getArtist, getlistArtist, updateArtistInfo, eliminarArtista, updateImageArtist, showImageArtist } from './artist.js'
 import { createAlbum, getAlbumforId, showAlbums, updateAlbum, updateAlbumImage, showImageAlbum } from './album.js'
-import { createSong, showSong, showSongs, updateSong, updateFileSong, deleteSong } from './song.js'
+import { createSong, showSong, showSongs, updateSong, updateFileSong, deleteSong, showFile } from './song.js'
 
 export {
     createUser,
@@ -28,5 +28,6 @@ export {
     showSongs,
     updateSong,
     updateFileSong,
-    deleteSong
+    deleteSong,
+    showFile
 }
