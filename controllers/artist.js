@@ -109,9 +109,14 @@ const eliminarArtista =  async(req, res) => {
         if(!artistUpdate){
             return res.status(200).json({ status: "error", msj: 'El artista no se encuentra o ha sido eliminado', data:[] });
         }
-
+        const albumgetId = await Album.find({artist:artistUpdate.id, estado:true})
         const album = await Album.updateMany({artist:artistUpdate.id, estado:true},{estado:false,update_at:Date.now()})
-        const song = await Song.updateMany({album:album.id, estado:true},{estado:false,update_at:Date.now()})
+        
+        albumgetId.forEach( async (element) => {
+            await Song.updateMany({album:element.id, estado:true},{estado:false,update_at:Date.now()})
+        });
+
+        const song = await Song.updateMany({album:artistUpdate.id, estado:true},{estado:false,update_at:Date.now()})
         
         res.status(200).json({ status: "success", msg:"El artistas, album, canciones se han eliminado, correctamente",data:artistUpdate})
     } catch (error) {
