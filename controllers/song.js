@@ -100,6 +100,33 @@ const updateSong = async (req, res) => {
 }
 
 //Metodo para subir el archivo de la cancion
+const updateFileSong = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+    
+        const song = await Song.findOne({_id:id, estado:true})
+        if(!song){
+            return res.status(200).json({status: "success", msg:"La Cancion no existe con ese criterio de busqueda o ya ha sido eliminado, intenta con otro id de un Cancion valida",data:[]})
+        }
+        
+        const pathImage = './uploads/img-song/' + song.file //creamos la ruta de la imagen previa
+        //verificamos si existe la imagen
+        if (fs.existsSync(pathImage)) {
+                fs.unlinkSync(pathImage)//en caso de que la imagen previa exista procedemos a eliminarla
+        }
+
+        const nombre = await subirArchivo(req.files, ['mp3'], 'img-song')
+        song.file = nombre
+        song.update_at = Date.now()
+        await song.save({ new: true })
+        res.status(200).json({ status: "success", msg:"La cancion mp3 se ha Actualizada Correctamente",data:[]})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen.",data:[],error})
+    }
+
+}
 
 //Metodo para eliminar cancion
 
@@ -107,5 +134,6 @@ export {
     createSong,
     showSong,
     showSongs,
-    updateSong
+    updateSong,
+    updateFileSong
 }

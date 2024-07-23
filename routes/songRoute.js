@@ -1,7 +1,7 @@
 import {Router} from "express";
 import { check } from 'express-validator'
 import { validarCampos, validarArchivoSubir, validarJWT } from '../middleware/index.js'
-import { createSong, showSong , showSongs, updateSong} from '../controllers/index.js'
+import { createSong, showSong , showSongs, updateSong, updateFileSong } from '../controllers/index.js'
 
 const route = Router();
 
@@ -44,5 +44,14 @@ route.put('/song/update-song/:id',[
     check('duration','El campo duration debe tener almenos 1 digito a 6').isLength({min:1, max:5}),
     validarCampos
 ],updateSong)
+
+
+route.put('/song/update-file-song/:id',[
+    validarJWT,
+    check('id','El id no es un id de Mongo valido').isMongoId(),
+    validarCampos,
+    validarArchivoSubir
+],updateFileSong)
+
 
 export default route

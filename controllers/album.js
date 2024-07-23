@@ -105,7 +105,7 @@ const updateAlbum = async (req, res) => {
         
         res.status(200).json({ status: "success", msg:"desde update",data:albumUpdate})
     } catch (error) {
-        res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
+        return res.status(400).json({ status: "error", msg:"no se pudieron actualizar los datos.",data:'',error})
     }
 
 }
@@ -134,7 +134,7 @@ const updateAlbumImage = async (req, res) => {
         await album.save({ new: true })
         res.status(200).json({ status: "success", msg:"Imagen Album Actualizada Correctamente",data:[]})
     } catch (error) {
-        res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen.",data:[],error})
+        return res.status(400).json({ status: "error", msg:"No se pudo actualizar la imagen.",data:[],error})
     }
 
 }
@@ -160,7 +160,7 @@ const showImageAlbum = async (req, res) => {
         }
 
     } catch (error) {
-        res.status(400).json({ status: "error", msg:"Error Al obtener la Imagen.",data:[],error})
+        return res.status(400).json({ status: "error", msg:"Error Al obtener la Imagen.",data:[],error})
     }
 
     const pathImage = `${process.cwd()}/assets/no-image.jpg`
