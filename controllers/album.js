@@ -168,11 +168,37 @@ const showImageAlbum = async (req, res) => {
 
 }
 
+
+//Metodo para eliminar album y sus anciones asociadas
+const deleteAlbum = async (req, res) => {
+
+    const { id } = req.params
+
+    try {
+
+        const albumUpdate = await Album.findOneAndUpdate({_id:id, estado:true},
+                                    {estado:false,update_at: Date.now()}, {new: true})
+                                    .select("-album -file -create_at")
+
+        if(!albumUpdate){
+            return res.status(200).json({ status: "error", msj: 'El Album no se encuentra o ha sido eliminada', data:[] });
+        }
+
+        const songUpdate = await Song.updateMany({album:id, estado:true},{estado:false,update_at: Date.now()})
+        
+        res.status(200).json({ status: "success", msg:"El Album y las canciones se han eliminado, correctamente",data:albumUpdate})
+    } catch (error) {
+        return res.status(400).json({ status: "error", msg:"no se pudieron eliminar, validado con el admin.",data:[],error})
+    }
+
+}
+
 export {
     createAlbum,
     getAlbumforId,
     showAlbums,
     updateAlbum,
     updateAlbumImage,
-    showImageAlbum
+    showImageAlbum,
+    deleteAlbum
 }
